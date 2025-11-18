@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="card">
+    <h1>🔐 Iniciar Sesión</h1>
+    <p class="subtitle">Control de Inventario Escolar</p>
+
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label>📧 Email</label>
+        <input 
+          type="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="tu@email.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>🔑 Contraseña</label>
+        <input 
+          type="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <div *ngIf="errorMessage" class="error">
+        ❌ {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}
+      </button>
+    </form>
+
+    <div class="footer">
+      <p>¿No tienes cuenta? 
+        <a (click)="goToRegister()">Regístrate aquí</a>
+      </p>
+    </div>
+  </div>
+</div>

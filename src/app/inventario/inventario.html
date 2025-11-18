@@ -1,0 +1,147 @@
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1>📦 Control de Inventario Escolar</h1>
+      <button class="btn-logout" (click)="logout()">Cerrar Sesión</button>
+    </div>
+  </header>
+
+  <!-- Estadísticas -->
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-number">{{ getStats().total }}</div>
+      <div class="stat-label">Total Artículos</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-number">{{ getStats().disponibles }}</div>
+      <div class="stat-label">Disponibles</div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-number">{{ getStats().enUso }}</div>
+      <div class="stat-label">En Uso</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-number">{{ getStats().danados }}</div>
+      <div class="stat-label">Dañados</div>
+    </div>
+    <div class="stat-card red">
+
+
+      <div class="stat-number">{{ getStats().perdidos }}</div>
+      <div class="stat-label">Perdidos</div>
+    </div>
+  </div>
+
+  <!-- Filtros y búsqueda -->
+  <div class="filters">
+    <input 
+      type="text" 
+      [(ngModel)]="searchTerm" 
+      (input)="onSearch()"
+      placeholder="🔍 Buscar por nombre o descripción..."
+      class="search-input"
+    />
+    
+    <select [(ngModel)]="selectedCategoria" (change)="applyFilters()" class="filter-select">
+      <option value="">Todas las categorías</option>
+      <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+    </select>
+
+    <select [(ngModel)]="selectedEstado" (change)="applyFilters()" class="filter-select">
+      <option value="">Todos los estados</option>
+      <option value="disponible">Disponible</option>
+      <option value="en-uso">En Uso</option>
+      <option value="dañado">Dañado</option>
+      <option value="perdido">Perdido</option>
+    </select>
+
+    <button class="btn-add" (click)="openForm()">+ Agregar Artículo</button>
+  </div>
+
+  <!-- Lista de artículos -->
+  <div class="items-grid">
+    <div *ngFor="let item of filteredItems" class="item-card">
+      <div class="item-header">
+        <h3>{{ item.nombre }}</h3>
+        <span class="badge" [class]="item.estado">{{ item.estado }}</span>
+      </div>
+      
+      <div class="item-body">
+        <p><strong>Categoría:</strong> {{ item.categoria }}</p>
+        <p><strong>Cantidad:</strong> {{ item.cantidad }}</p>
+        <p><strong>Ubicación:</strong> {{ item.ubicacion }}</p>
+        <p><strong>Descripción:</strong> {{ item.descripcion }}</p>
+        <p class="item-date">
+          <strong>Registrado:</strong> {{ item.fechaRegistro | date:'dd/MM/yyyy' }}
+        </p>
+      </div>
+
+      <div class="item-actions">
+        <button class="btn-edit" (click)="openForm(item)">✏️ Editar</button>
+        <button class="btn-delete" (click)="deleteItem(item.id!)">🗑️ Eliminar</button>
+      </div>
+    </div>
+
+    <div *ngIf="filteredItems.length === 0" class="empty-state">
+      <p>📭 No hay artículos que coincidan con los filtros</p>
+      <button class="btn-add" (click)="openForm()">Agregar el primero</button>
+    </div>
+  </div>
+
+  <!-- Modal de formulario -->
+  <div *ngIf="showForm" class="modal" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>{{ editingItem ? '✏️ Editar Artículo' : '➕ Nuevo Artículo' }}</h2>
+      
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" [(ngModel)]="formData.nombre" name="nombre" required />
+        </div>
+
+        <div class="form-group">
+          <label>Categoría *</label>
+          <select [(ngModel)]="formData.categoria" name="categoria" required>
+            <option value="">Selecciona una categoría</option>
+            <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Cantidad *</label>
+            <input type="number" [(ngModel)]="formData.cantidad" name="cantidad" min="0" required />
+          </div>
+
+          <div class="form-group">
+            <label>Estado</label>
+            <select [(ngModel)]="formData.estado" name="estado">
+              <option value="disponible">Disponible</option>
+              <option value="en-uso">En Uso</option>
+              <option value="dañado">Dañado</option>
+              <option value="perdido">Perdido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Ubicación</label>
+          <input type="text" [(ngModel)]="formData.ubicacion" name="ubicacion" />
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <textarea [(ngModel)]="formData.descripcion" name="descripcion" rows="3"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeForm()">Cancelar</button>
+          <button type="submit" class="btn-submit">
+            {{ editingItem ? 'Actualizar' : 'Agregar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

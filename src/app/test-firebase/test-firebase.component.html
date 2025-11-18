@@ -1,0 +1,15 @@
+<div style="padding: 20px; font-family: Arial;">
+  <h1>🔥 Prueba de Conexión Firebase</h1>
+  
+  <div *ngIf="firebaseConnected" style="background: #d4edda; padding: 15px; border-radius: 8px; margin: 10px 0;">
+    <h2 style="color: #155724; margin: 0;">✅ Firebase Conectado Correctamente</h2>
+    <p style="margin: 10px 0;"><strong>ID del Proyecto:</strong> {{ projectId }}</p>
+    <p style="margin: 10px 0;"><strong>Autenticación:</strong> {{ authEnabled ? '✅ Habilitada' : '❌ Deshabilitada' }}</p>
+    <p style="margin: 10px 0;"><strong>Firestore:</strong> ✅ Habilitado</p>
+  </div>
+
+  <div *ngIf="!firebaseConnected" style="background: #f8d7da; padding: 15px; border-radius: 8px; margin: 10px 0;">
+    <h2 style="color: #721c24; margin: 0;">❌ Error de Conexión</h2>
+    <p>No se pudo conectar con Firebase. Revisa la consola.</p>
+  </div>
+</div>

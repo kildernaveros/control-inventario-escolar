@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="card">
+    <h1>📝 Crear Cuenta</h1>
+    <p class="subtitle">Control de Inventario Escolar</p>
+
+    <form (ngSubmit)="onRegister()">
+      <div class="form-group">
+        <label>📧 Email</label>
+        <input 
+          type="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="tu@email.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>🔑 Contraseña</label>
+        <input 
+          type="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="Mínimo 6 caracteres"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>🔑 Confirmar Contraseña</label>
+        <input 
+          type="password" 
+          [(ngModel)]="confirmPassword" 
+          name="confirmPassword"
+          placeholder="Repite tu contraseña"
+          required
+        />
+      </div>
+
+      <div *ngIf="errorMessage" class="error">
+        ❌ {{ errorMessage }}
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Registrando...' : 'Crear Cuenta' }}
+      </button>
+    </form>
+
+    <div class="footer">
+      <p>¿Ya tienes cuenta? 
+        <a (click)="goToLogin()">Inicia sesión aquí</a>
+      </p>
+    </div>
+  </div>
+</div>
