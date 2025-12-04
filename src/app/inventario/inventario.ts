@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { InventarioService } from '../services/inventario';
 import { AuthService } from '../services/auth';
 import { InventarioItem } from '../models/inventario.model';
+import { error } from 'node:console';
 
 @Component({
   selector: 'app-inventario',
@@ -41,21 +42,21 @@ export class InventarioComponent implements OnInit {
     private router: Router
   ) {}
 
-ngOnInit() {
-  // Esperar a que el usuario se cargue antes de cargar items
-  this.authService.user$.subscribe(user => {
-    if (user) {
-      console.log('✅ Usuario cargado en inventario:', user.email);
-      this.loadItems();
-    } else {
-      console.log('⏳ Esperando usuario...');
-    }
-  });
-}
-  loadItems() {
-    this.inventarioService.getItems().subscribe(items => {
-      this.items = items;
-      this.applyFilters();
+  ngOnInit() {
+    console.log('🎬 Componente iniciado');
+    
+    // Suscribirse directamente a items$ del servicio
+    this.inventarioService.items$.subscribe({
+      next: (items: InventarioItem[]) => {
+        console.log('📦 Items recibidos del servicio:', items.length);
+        console.log('📋 Items completos:', items);
+        this.items = items;
+        this.applyFilters();
+        console.log('🔍 Items filtrados:', this.filteredItems.length);
+      },
+      error: (error: Error) => {
+        console.error('❌ Error al recibir items:', error);
+      }
     });
   }
 
@@ -68,6 +69,7 @@ ngOnInit() {
       
       return matchSearch && matchCategoria && matchEstado;
     });
+    console.log('🎯 Después de filtrar:', this.filteredItems.length, 'items');
   }
 
   onSearch() {
@@ -110,23 +112,34 @@ ngOnInit() {
   }
 
   async onSubmit() {
-    console.log('Usuario acftual al invitar:', this.authService.getCurrentUser()?.email);
+    console.log('📝 Enviando formulario...');
+    console.log('👤 Usuario actual:', this.authService.getCurrentUser()?.email);
+    
     if (!this.formData.nombre || !this.formData.categoria) {
       alert('Por favor completa los campos obligatorios');
       return;
     }
 
-    if (this.editingItem?.id) {
-      await this.inventarioService.updateItem(this.editingItem.id, this.formData);
-    } else {
-      await this.inventarioService.addItem(this.formData);
-    }
+    try {
+      if (this.editingItem?.id) {
+        console.log('✏️ Actualizando item:', this.editingItem.id);
+        await this.inventarioService.updateItem(this.editingItem.id, this.formData);
+      } else {
+        console.log('➕ Agregando nuevo item');
+        const result = await this.inventarioService.addItem(this.formData);
+        console.log('✅ Resultado:', result);
+      }
 
-    this.closeForm();
+      this.closeForm();
+      console.log('✔️ Formulario cerrado');
+    } catch (error) {
+      console.error('❌ Error en onSubmit:', error);
+    }
   }
 
   async deleteItem(id: string) {
     if (confirm('¿Estás seguro de eliminar este artículo?')) {
+      console.log('🗑️ Eliminando item:', id);
       await this.inventarioService.deleteItem(id);
     }
   }
