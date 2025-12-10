@@ -144,6 +144,24 @@ ngOnInit() {
     perdidos: this.items.filter(i => i.estado === 'perdido').length
   };
 }
+getFormattedDate(timestamp: any): string {
+  if (!timestamp) return 'Sin fecha';
+  
+  try {
+    // Si es un Timestamp de Firestore
+    if (timestamp.toDate) {
+      return timestamp.toDate().toLocaleDateString('es-ES');
+    }
+    // Si es una Date normal
+    if (timestamp instanceof Date) {
+      return timestamp.toLocaleDateString('es-ES');
+    }
+    // Si es un string o número
+    return new Date(timestamp).toLocaleDateString('es-ES');
+  } catch (error) {
+    return 'Fecha inválida';
+  }
+}
 
   async logout() {
     await this.authService.logout();
