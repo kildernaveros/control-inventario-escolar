@@ -91,7 +91,7 @@ ngOnInit() {
       this.editingItem = null;
       this.resetForm();
     }
-    this.showForm = true;
+    this.showForm = false;
   }
 
   closeForm() {

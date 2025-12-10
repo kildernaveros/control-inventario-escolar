@@ -71,7 +71,7 @@
         <p><strong>Ubicación:</strong> {{ item.ubicacion }}</p>
         <p><strong>Descripción:</strong> {{ item.descripcion }}</p>
         <p class="item-date">
-          <strong>Registrado:</strong> {{ item.fechaRegistro | date:'dd/MM/yyyy' }}
+          <strong>Registrado:</strong> {{ getFormattedDate(item.fechaRegistro) }}
         </p>
       </div>
 
