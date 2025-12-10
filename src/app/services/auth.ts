@@ -30,7 +30,7 @@ constructor(private auth: Auth) {
       console.log('✅ Usuario registrado:', userCredential.user.email);
       return { success: true, user: userCredential.user };
     } catch (error: any) {
-      console.log('❌ Error al registrar:', error.message);
+      console.error('❌ Error al registrar:', error.message);
       return { success: false, error: error.message };
     }
   }
