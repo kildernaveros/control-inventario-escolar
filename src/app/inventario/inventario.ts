@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { InventarioService } from '../services/inventario';
 import { AuthService } from '../services/auth';
 import { InventarioItem } from '../models/inventario.model';
-
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-inventario',
@@ -22,8 +22,7 @@ export class InventarioComponent implements OnInit {
   selectedEstado = '';
   showForm = false;
   editingItem: InventarioItem | null = null;
-
-  // Formulario
+  private userSubscription?: Subscription;
   formData = {
     nombre: '',
     categoria: '',
@@ -43,13 +42,23 @@ export class InventarioComponent implements OnInit {
   ) {}
 
 ngOnInit() {
-  // Esperar a que el usuario se cargue antes de cargar items
+  console.log('📍 Componente inventario iniciado');
+  
   this.authService.user$.subscribe(user => {
+    console.log('👤 Estado del usuario cambió:', user?.email || 'No autenticado');
+    
     if (user) {
-      console.log('✅ Usuario cargado en inventario:', user.email);
-      this.loadItems();
-    } else {
-      console.log('⏳ Esperando usuario...');
+      // Limpiar suscripción anterior si existe
+      if (this.itemsSubscription) {
+        this.itemsSubscription.unsubscribe();
+      }
+      
+      // Suscribirse a los items
+      this.itemsSubscription = this.inventarioService.items$.subscribe((items: InventarioItem[]) => {
+        console.log('📦 Items recibidos:', items.length);
+        this.items = items;
+        this.applyFilters();
+      });
     }
   });
 }
