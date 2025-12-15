@@ -7,6 +7,8 @@ import { AuthService } from '../services/auth';
 import { InventarioItem } from '../models/inventario.model';
 import { Subscription } from 'rxjs';
 
+
+
 @Component({
   selector: 'app-inventario',
   standalone: true,
@@ -20,9 +22,9 @@ export class InventarioComponent implements OnInit {
   searchTerm = '';
   selectedCategoria = '';
   selectedEstado = '';
-  showForm = false;
+  showForm = false ;
   editingItem: InventarioItem | null = null;
-  private userSubscription?: Subscription;
+
   formData = {
     nombre: '',
     categoria: '',
@@ -42,23 +44,14 @@ export class InventarioComponent implements OnInit {
   ) {}
 
 ngOnInit() {
-  console.log('📍 Componente inventario iniciado');
-  
+  // Esperar a que el usuario se cargue antes de cargar items
   this.authService.user$.subscribe(user => {
-    console.log('👤 Estado del usuario cambió:', user?.email || 'No autenticado');
-    
+
     if (user) {
-      // Limpiar suscripción anterior si existe
-      if (this.itemsSubscription) {
-        this.itemsSubscription.unsubscribe();
-      }
-      
-      // Suscribirse a los items
-      this.itemsSubscription = this.inventarioService.items$.subscribe((items: InventarioItem[]) => {
-        console.log('📦 Items recibidos:', items.length);
-        this.items = items;
-        this.applyFilters();
-      });
+      console.log('✅ Usuario cargado en inventario:', user.email);
+      this.loadItems();
+    } else {
+      console.log('⏳ Esperando usuario...');
     }
   });
 }
@@ -100,7 +93,7 @@ ngOnInit() {
       this.editingItem = null;
       this.resetForm();
     }
-    this.showForm = false;
+    this.showForm = true;
   }
 
   closeForm() {
