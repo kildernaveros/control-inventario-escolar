@@ -1,0 +1,9 @@
+{
+  "routes": {
+    "/": {},
+    "/inventario": {},
+    "/login": {},
+    "/register": {},
+    "/test": {}
+  }
+}

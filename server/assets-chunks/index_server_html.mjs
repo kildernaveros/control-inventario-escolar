@@ -1,0 +1,1 @@
+export default `<link rel="stylesheet" href="styles-5INURTSO.css"><script src="main-JK3H63RW.js" type="module"></script><app-root></app-root>`;
